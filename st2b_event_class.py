@@ -48,42 +48,45 @@ def draw_events(all_events, file_name):
 
 
 class Events:
-	s_pmt = 3.
+	s_pmt = 3.                               # mm
 	def __init__(self):
 		# 1 dimensional arrays
-		self.N_run = []
-		self.N_scattering = []
-		self.N_telescope = []
-		self.N_photoelectrons = []
-		self.energy = []
-		self.theta = []
-		self.phi = []
-		self.x_core = []
-		self.y_core = []
-		self.z_core = []
-		self.h_1st_interaction = []
-		self.particle_type = []
-		self.xmax = []
-		self.hmax = []
-		self.x_telescope = []
-		self.y_telescope = []
-		self.z_telescope = []
-		self.x_offset = []
-		self.y_offset = []
+		self.N_run = []                      # int32
+		self.N_scattering = []               # int32
+		self.N_telescope = []                # int32
+		self.N_photoelectrons = []           # int32
+		self.N_pixels = []           # int32
 
-		self.x_core_minus_offset = []
-		self.y_core_minus_offset = []
+		
+		self.energy = []                     # eV
+		self.theta = []                      # radian
+		self.phi = []                        # radian
+		self.x_core = []                     # m
+		self.y_core = []                     # m
+		self.z_core = []                     # m
+		self.h_1st_interaction = []          # m
+		self.particle_type = []              # 
+		self.xmax = []                       # g/cm^2
+		self.hmax = []                       # m
+		self.x_telescope = []                # m
+		self.y_telescope = []                # m
+		self.z_telescope = []                # m
+		self.x_offset = []                   # m
+		self.y_offset = []                   # m
 
-		self.distance = []
+		self.x_core_minus_offset = []        # m
+		self.y_core_minus_offset = []        # m
 
-		self.theta_telescope = []
-		self.phi_telescope = []
-		self.delta_alpha = []
-		self.alpha_pmt = []
-		self.T_average = []
-		self.row_numbers = []
-		self.column_numbers = []
-		self.x_pmt = []
+		self.distance = []                   # m
+
+		self.theta_telescope = []            # radian
+		self.phi_telescope = []              # radian
+		self.delta_alpha = []                # radian
+		self.alpha_pmt = []                  # radian
+		self.T_average = []                  # s
+		self.row_numbers = []                # int32
+		self.column_numbers = []             # int32
+		self.x_pmt = [] 
 		self.y_pmt = []
 		self.amplitudes = []
 		self.avg_times = []
@@ -93,21 +96,22 @@ class Events:
 		# 2 dimensional arrays
 		self.row_numbers = []
 		self.column_numbers = []
-		self.x_pmt = []
-		self.y_pmt = []
-		self.amplitudes = []
-		self.avg_times = []
-		self.std_times = []
+		self.x_pmt = []                      # mm
+		self.y_pmt = []                      # mm
+		self.amplitudes = []                
+		self.avg_times = []                  # s
+		self.std_times = []                  # s
 
 	def add_header(self, N_run, N_scattering, N_telescope, N_photoelectrons, 
 		energy, theta, phi, x_core, y_core, z_core, 
 		h_1st_interaction, particle_type, xmax, hmax, 
 		x_telescope, y_telescope, z_telescope, x_offset, y_offset, 
-		theta_telescope, phi_telescope, delta_alpha, alpha_pmt, T_average):
+		theta_telescope, phi_telescope, delta_alpha, alpha_pmt, T_average, N_pixels):
 		self.N_run.append(N_run)
 		self.N_scattering.append(N_scattering)
 		self.N_telescope.append(N_telescope)
 		self.N_photoelectrons.append(N_photoelectrons)
+		self.N_pixels.append(N_pixels)
 
 
 		self.energy.append(energy)

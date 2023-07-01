@@ -3,6 +3,7 @@
 import struct
 from st2b_event_class import Events
 from st2b_event_class import draw_events
+from hillas_class import Hillas
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -39,7 +40,7 @@ with open("st2b/"+file_name, "rb") as file_in_bytes:
 			energy, theta, phi, x_core, y_core, z_core, 
 			h_1st_interaction, particle_type, xmax, hmax, 
 			x_telescope, y_telescope, z_telescope, x_offset, y_offset, 
-			theta_telescope, phi_telescope, delta_alpha, alpha_pmt, T_average)
+			theta_telescope, phi_telescope, delta_alpha, alpha_pmt, T_average, N_pixels)
 
 		#print("distance: ", sqrt(pow((x_core * 0.001 - x_offset * 0.001 - x_telescope * 0.001),2) + pow((y_core * 0.001 - y_offset * 0.001 - y_telescope * 0.001),2)))
 
@@ -68,7 +69,27 @@ with open("st2b/"+file_name, "rb") as file_in_bytes:
 print(file_name, " reading DONE")
 
 
-draw_events(all_events, file_name)
+#draw_events(all_events, file_name)
+
+print('e: ', all_events.N_photoelectrons[49])
+print('n pix: ', all_events.N_pixels[49])
+print('dist: ', all_events.distance[49])
+print('len x: ', len(all_events.x_pmt[49]))
+print('len y: ', len(all_events.y_pmt[49]))
+print('len amp: ', len(all_events.amplitudes[49]))
+
+first_hillas = Hillas(all_events.x_pmt[49], all_events.y_pmt[49], all_events.amplitudes[49])
+
+print('x_mean ', first_hillas.x_mean)
+print('y_mean ', first_hillas.y_mean)
+print('length ', first_hillas.length)
+print('width ', first_hillas.width)
+print('distance ', first_hillas.distance)
+print('azwidth ', first_hillas.azwidth)
+print('miss ', first_hillas.miss)
+print('alpha ', first_hillas.alpha/pi*180)
+
+
 
 
 
