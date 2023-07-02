@@ -7,6 +7,9 @@ from math import pi
 from math import sqrt
 from math import pow
 
+import matplotlib.patches as mpatches
+from matplotlib.collections import PatchCollection
+
 def draw_hist(some_list, title, file_name):
 	fig, ax = plt.subplots()
 	ax.hist(some_list)
@@ -15,12 +18,13 @@ def draw_hist(some_list, title, file_name):
 	plt.show()
 
 
-def draw_events(all_events, file_name):
+def draw_stats(all_events, file_name):
 	draw_hist(all_events.energy, "energy", file_name)
 	draw_hist(all_events.N_run, "N_run", file_name)
 	draw_hist(all_events.N_scattering, "N_scattering", file_name)
 	draw_hist(all_events.N_telescope, "N_telescope", file_name)
 	draw_hist(all_events.N_photoelectrons, "N_photoelectrons", file_name)
+	draw_hist(all_events.N_pixels, "N_pixels", file_name)
 	draw_hist(all_events.theta, "theta", file_name)
 	draw_hist(all_events.phi, "phi", file_name)
 	draw_hist(all_events.x_core, "x_core", file_name)
@@ -48,7 +52,7 @@ def draw_events(all_events, file_name):
 
 
 class Events:
-	s_pmt = 3.                               # mm
+	s_pmt = 30.                               # mm
 	def __init__(self):
 		# 1 dimensional arrays
 		self.N_run = []                      # int32
@@ -178,4 +182,32 @@ class Events:
 		self.x_pmt[-1].append(x)
 		self.y_pmt[-1].append(y)
 
+
+	def draw_event(self, n):
+		print('event number:', n)
+		print("e's in event:", self.N_photoelectrons[n])
+
+		fig, ax = plt.subplots()
+		patches = []
+		alphas = self.amplitudes[n]
+
+
+
+		for i in range(self.N_pixels[n]):
+			patches.append(mpatches.RegularPolygon([self.x_pmt[n][i], self.y_pmt[n][i]], 6, 10*np.sqrt(3)))
+
+
+		norm = plt.Normalize(np.array(alphas).min(), np.array(alphas).max())
+		collection = PatchCollection(patches, cmap="rainbow", norm=norm, match_original = True) 
+
+		collection.set_array(alphas)
+
+		polys = ax.add_collection(collection)
+
+		plt.xticks(np.arange(-440, 470, step=30))
+		plt.yticks(np.arange(-400.730669589, 400.730669589, step=25.9807621135))
+
+		fig.colorbar(polys)   # , cmap="rainbow"
+
+		plt.show()
 

@@ -2,7 +2,8 @@
 
 import struct
 from st2b_event_class import Events
-from st2b_event_class import draw_events
+from st2b_event_class import draw_stats
+from st2b_event_class import draw_hist
 from hillas_class import Hillas
 import numpy as np
 import matplotlib.pyplot as plt
@@ -69,7 +70,9 @@ with open("st2b/"+file_name, "rb") as file_in_bytes:
 print(file_name, " reading DONE")
 
 
-#draw_events(all_events, file_name)
+#draw_stats(all_events, file_name)
+draw_hist(all_events.N_pixels, "N_pixels", file_name)
+
 
 print('e: ', all_events.N_photoelectrons[49])
 print('n pix: ', all_events.N_pixels[49])
@@ -89,6 +92,18 @@ print('azwidth ', first_hillas.azwidth)
 print('miss ', first_hillas.miss)
 print('alpha ', first_hillas.alpha/pi*180)
 
+
+count = 0
+acount = 0
+print('ssssss')
+for NN in all_events.N_pixels:
+	if NN > 150:
+		print('NN:', NN, ', event_number: ', count)
+		all_events.draw_event(count)
+		acount+=1
+	if acount>20:
+		break
+	count+=1
 
 
 
