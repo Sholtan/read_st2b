@@ -4,9 +4,13 @@ import struct
 from st2b_event_class import Events
 from st2b_event_class import draw_stats
 from st2b_event_class import draw_hist
+from vis_camera import CameraDisplay
 from hillas_class import Hillas
 import numpy as np
 import matplotlib.pyplot as plt
+
+import matplotlib.patches as mpatches
+from matplotlib.collections import PatchCollection
 
 from math import sin
 from math import pi
@@ -25,9 +29,8 @@ event_counter = 0
 
 
 
-all_events = Events()
+all_events = Events(file_name)
 
-list_to_draw = [[], [], [], [], [], [], [], [], []]
 
 with open("st2b/"+file_name, "rb") as file_in_bytes:
 	header_chunk = file_in_bytes.read(header_size)
@@ -43,43 +46,23 @@ with open("st2b/"+file_name, "rb") as file_in_bytes:
 			x_telescope, y_telescope, z_telescope, x_offset, y_offset, 
 			theta_telescope, phi_telescope, delta_alpha, alpha_pmt, T_average, N_pixels)
 
-		#print("distance: ", sqrt(pow((x_core * 0.001 - x_offset * 0.001 - x_telescope * 0.001),2) + pow((y_core * 0.001 - y_offset * 0.001 - y_telescope * 0.001),2)))
-
-		#if event_counter%20==0:
-			#input("pause\n")
-
 
 		for i in range(N_pixels):
 			pixel_chunk = file_in_bytes.read(pixel_amplitude_size)
 			amplitude, row_number, column_number = struct.unpack('<3i', pixel_chunk[0:12])
-
-			
-
 			average_time, std_time = struct.unpack('<2d', pixel_chunk[12:28])
-
 			all_events.add_pixel(row_number, column_number, amplitude, average_time, std_time)
-		#print(some_event.pixel_row_column_amp_avgtime_stdtime)
-
 		
 		event_counter+=1
-		if event_counter%1000==0:
-			print("event: ", event_counter)
+		if event_counter%20000==0:
+			print("reading event: ", event_counter)
 		
 		header_chunk = file_in_bytes.read(header_size)
 
-print(file_name, " reading DONE")
+print("\n\nreading file " + file_name + " is done\n\n")
 
 
 #draw_stats(all_events, file_name)
-draw_hist(all_events.N_pixels, "N_pixels", file_name)
-
-
-print('e: ', all_events.N_photoelectrons[49])
-print('n pix: ', all_events.N_pixels[49])
-print('dist: ', all_events.distance[49])
-print('len x: ', len(all_events.x_pmt[49]))
-print('len y: ', len(all_events.y_pmt[49]))
-print('len amp: ', len(all_events.amplitudes[49]))
 
 first_hillas = Hillas(all_events.x_pmt[49], all_events.y_pmt[49], all_events.amplitudes[49])
 
@@ -90,21 +73,13 @@ print('width ', first_hillas.width)
 print('distance ', first_hillas.distance)
 print('azwidth ', first_hillas.azwidth)
 print('miss ', first_hillas.miss)
-print('alpha ', first_hillas.alpha/pi*180)
+print('alpha ', first_hillas.alpha/pi*180, "\n\n")
 
 
 count = 0
-acount = 0
-print('ssssss')
-for NN in all_events.N_pixels:
-	if NN > 150:
-		print('NN:', NN, ', event_number: ', count)
-		all_events.draw_event(count)
-		acount+=1
-	if acount>20:
-		break
-	count+=1
-
+#all_events.draw_event(49)
+        # (event_number, file_name, particle_type, energy, row_column_pairs, amplitudes)
+CameraDisplay(event_number=49, file_name=file_name, particle_type=all_events.particle_type[49], energy=all_events.energy[49], row_column_pairs=all_events.row_column_pairs[49], amplitudes=all_events.amplitudes[49])
 
 
 
